@@ -29,6 +29,27 @@ xAs : {a1, a2 : N} -> a1 = a2 -> S a1 = S a2
 xAs Refl = Refl
 
 export
+natContra1 : {x : N} -> Z = S x -> Void
+natContra1 Refl impossible
+
+export
+natContra2 : {x : N} -> S x = Z -> Void
+natContra2 Refl impossible
+
+export
+natContra3 : {x1, x2 : N} -> (x1 = x2 -> Void) -> S x1 = S x2 -> Void
+natContra3 contra Refl = contra Refl
+
+export
+natEq : (x1, x2 : N) -> Dec (x1 = x2)
+natEq Z Z = Yes Refl
+natEq Z (S x2) = No natContra1
+natEq (S x1) Z = No natContra2
+natEq (S x1) (S x2) = case natEq x1 x2 of
+  Yes prf => Yes (xAs prf)
+  No contra => No (natContra3 contra)
+
+export
 (+) : (x1, x2 : N) -> N
 (+) Z x2 = x2
 (+) (S x1) x2 = S (x1 + x2)
@@ -144,4 +165,84 @@ aM {x1 = Z} = Refl
 aM {x1 = S x1} = t12p3m ..> x1Ap aM
 
 export
-div : (x, y : N) -> 
+contra2nat : {x1 : N} -> (x1 = Z -> Void) -> (x2 ** x1 = S x2)
+contra2nat f {x1 = Z} = void (f Refl)
+contra2nat f {x1 = S x1} = (x1 ** Refl)
+
+export
+sub : (x1, x2 : N) -> N
+sub x1 Z = x1
+sub Z (S x2) = Z
+sub (S x1) (S x2) = sub x1 x2
+
+export
+esubs : (x1, x2 : N) -> (x3 ** Either (x1 = x2 + S x3) (x2 = x1 + x3))
+esubs Z x2 = (x2 ** Right Refl)
+esubs (S x1) Z = (x1 ** Left Refl)
+esubs (S x1) (S x2) = let (x4 ** p) = esubs x1 x2 in case p of
+  Left p1 => (x4 ** Left $ xAs p1)
+  Right p2 => (x4 ** Right $ xAs p2)
+
+export
+divf : (x1, x2 : N) -> {x3, x4 : N} -> {p : x3 = x1 + x4} -> N
+divf Z x2 = Z
+divf (S x1) x2 {x3 = Z} = void (natContra1 p)
+divf (S x1) x2 {x3 = S x3} = let (x5 ** e) = esubs (S x1) x2 in case e of
+  Left p1 => S $ divf x5 x2 {x3, p = vAs p ..> xA1p (vAs $ p1 ..> c21p) ..> aP}
+  Right p2 => Z
+
+export
+modf : (x1, x2 : N) -> {x3, x4 : N} -> {p : x3 = x1 + x4} -> N
+modf Z x2 = Z
+modf (S x1) x2 {x3 = Z} = void (natContra1 p)
+modf (S x1) x2 {x3 = S x3} = let (x5 ** e) = esubs (S x1) x2 in case e of
+  Left p1 => modf x5 x2 {x3, p = vAs p ..> xA1p (vAs $ p1 ..> c21p) ..> aP}
+  Right p2 => S x1
+
+export
+modr : (x1, x2 : N) -> {x3, x4 : N} -> {p : x3 = x1 + x4} -> N
+modr Z x2 = x2
+modr (S x1) x2 {x3 = Z} = void (natContra1 p)
+modr (S x1) x2 {x3 = S x3} = let (x5 ** e) = esubs (S x1) x2 in case e of
+  Left p1 => modr x5 x2 {x3, p = vAs p ..> xA1p (vAs $ p1 ..> c21p) ..> aP}
+  Right p2 => x5
+
+export
+div : (x1, x2 : N) -> N
+div x1 x2 = divf x1 x2 {p = sym t1zp}
+
+export
+mod : (x1, x2 : N) -> N
+mod x1 x2 = modf x1 x2 {p = sym t1zp}
+
+export
+divc : (x1, x2 : N) -> N
+divc x1 x2 = divf (x1 + x2) x2 {p = sym t1zp}
+
+export
+modc : (x1, x2 : N) -> N
+modc x1 x2 = modr (x1 + x2) x2 {p = sym t1zp}
+
+export
+tdivf : {x1, x2, x3, x4 : N} -> {p : x3 = x1 + x4} -> x1 = divf x1 x2 {p} * (S x2) + modf x1 x2 {p}
+tdivf {x1 = Z} = Refl
+tdivf {x1 = S x, x3 = Z} = void (natContra1 p)
+tdivf {x1 = S x, x3 = S x3} with (esubs (S x) x2)
+  tdivf {x1 = S x, x3 = S x3} | (x5 ** Left p1) = p1 ..> t12sp ..> (xAs $ x1Ap (tdivf {x1 = x5}) .!> aP)
+  tdivf {x1 = S x, x3 = S x3} | (x5 ** Right p2) = Refl
+
+export
+tmodf : {x1, x2, x3, x4 : N} -> {p : x3 = x1 + x4} -> x2 = modf x1 x2 {p} + modr x1 x2 {p}
+tmodf {x1 = Z} = Refl
+tmodf {x1 = S x, x3 = Z} = void (natContra1 p)
+tmodf {x1 = S x, x3 = S x3} with (esubs (S x) x2)
+  tmodf {x1 = S x, x3 = S x3} | (x5 ** Left p1) = tmodf
+  tmodf {x1 = S x, x3 = S x3} | (x5 ** Right p2) = p2
+
+export
+tdiv : {x1, x2 : N} -> x1 = div x1 x2 * (S x2) + mod x1 x2
+tdiv = tdivf
+
+export
+tdivc : {x1, x2 : N} -> x1 + modc x1 x2 = divc x1 x2 * (S x2)
+tdivc = v1Ap $ c21p ..> aP ..> x1Ap (tmodf ..> c21p) !.> tdivf ..> c21p

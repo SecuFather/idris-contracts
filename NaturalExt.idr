@@ -42,7 +42,7 @@ public export
 namespace Div
   public export
   (==) : (abc : (N, N, N)) -> {x, y : N} -> (d : Div x y) -> Type
-  (==) (a, b, c) xy = (y * a + b = x, y = b + S c)
+  (==) (a, b, c) xy = (x = a * y + b, y = b + S c)
 
 export
 tu1m : {x1 : N} -> S Z * x1 = x1
