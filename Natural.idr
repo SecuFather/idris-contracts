@@ -200,6 +200,14 @@ modf (S x1) x2 {x3 = S x3} = let (x5 ** e) = esubs (S x1) x2 in case e of
   Right p2 => S x1
 
 export
+modz : (x1, x2 : N) -> {x3, x4 : N} -> {p : x3 = x1 + x4} -> N
+modz Z x2 = Z
+modz (S x1) x2 {x3 = Z} = void (natContra1 p)
+modz (S x1) x2 {x3 = S x3} = let (x5 ** e) = esubs (S x1) x2 in case e of
+  Left p1 => modz x5 x2 {x3, p = vAs p ..> xA1p (vAs $ p1 ..> c21p) ..> aP}
+  Right p2 => S Z
+
+export
 modr : (x1, x2 : N) -> {x3, x4 : N} -> {p : x3 = x1 + x4} -> N
 modr Z x2 = x2
 modr (S x1) x2 {x3 = Z} = void (natContra1 p)
@@ -228,7 +236,7 @@ tdivf : {x1, x2, x3, x4 : N} -> {p : x3 = x1 + x4} -> x1 = divf x1 x2 {p} * (S x
 tdivf {x1 = Z} = Refl
 tdivf {x1 = S x, x3 = Z} = void (natContra1 p)
 tdivf {x1 = S x, x3 = S x3} with (esubs (S x) x2)
-  tdivf {x1 = S x, x3 = S x3} | (x5 ** Left p1) = p1 ..> t12sp ..> (xAs $ x1Ap (tdivf {x1 = x5}) .!> aP)
+  tdivf {x1 = S x, x3 = S x3} | (x5 ** Left p1) = p1 ..> t12sp ..> (xAs $ x1Ap tdivf .!> aP)
   tdivf {x1 = S x, x3 = S x3} | (x5 ** Right p2) = Refl
 
 export
@@ -240,9 +248,46 @@ tmodf {x1 = S x, x3 = S x3} with (esubs (S x) x2)
   tmodf {x1 = S x, x3 = S x3} | (x5 ** Right p2) = p2
 
 export
-tdiv : {x1, x2 : N} -> x1 = div x1 x2 * (S x2) + mod x1 x2
-tdiv = tdivf
+t12d2sm : {x1, x2 : N} -> mod x1 x2 + div x1 x2 * (S x2) = x1
+t12d2sm = c21p .!> tdivf
 
 export
-tdivc : {x1, x2 : N} -> x1 + modc x1 x2 = divc x1 x2 * (S x2)
-tdivc = v1Ap $ c21p ..> aP ..> x1Ap (tmodf ..> c21p) !.> tdivf ..> c21p
+t12c2sm : {x1, x2 : N} -> divc x1 x2 * (S x2) = x1 + modc x1 x2
+t12c2sm = v1Ap $ t12d2sm ..> x1Ap tmodf ..> c213pp
+
+export
+congDivL : {a1, a2, x2, x3, x4, x5, x6: N} -> {p : x3 = a1 + x4} -> {pp : x5 = a2 + x6} -> a1 = a2 -> divf a1 x2 {p,x4} = divf a2 x2 {p=pp,x4=x6}
+congDivL Refl {a2 = Z} = Refl
+congDivL Refl {a2 = S a2, x3 = Z} = void (natContra1 p)
+congDivL Refl {a2 = S a2, x3 = S x3, x5 = Z} = void (natContra1 pp)
+congDivL Refl {a2 = S a2, x3 = S x3, x5 = S x5} with (esubs (S a2) x2)
+  congDivL Refl {a2 = S a2, x3 = S x3, x5 = S x5} | (x7 ** Left p1) = xAs $ congDivL Refl
+  congDivL Refl {a2 = S a2, x3 = S x3, x5 = S x5} | (x7 ** Right p2) = Refl
+
+export
+tdivm : {x1, x2, x3, x4 : N} -> {p : x3 = (x1 * S x2) + x4} -> divf (x1 * S x2) x2 {p,x4} = x1
+tdivm {x1 = Z} = Refl
+tdivm {x1 = S x, x3 = Z} = void (natContra1 p)
+tdivm {x1 = S x, x3 = S x3} with (esubs (S (x2 + (x * S x2))) x2)
+  tdivm {x1 = S x, x3 = S x3} | (x5 ** Left p1) = let
+    v1 = vAs $ v1Ap $ p1 !!> t12sp
+    v2 = vAs $ p ..> xAs (aP ..> c213pp)
+    in xAs $ congDivL v1 ..> tdivm {p = v2}
+  tdivm {x1 = S x, x3 = S x3} | (x5 ** Right p2) = void $ natContra1 $ v1Ap $ t1zp ..> p2 ..> xAs aP .!> t12sp
+
+export
+tdivp : {x1, x2, x3, x4, x5, x6 : N} -> {p : x3 = (x1 + x5 * S x2) + x4} -> {pp : x3 = x1 + x6} -> 
+divf (x1 + x5 * S x2) x2 {p,x4} = (divf x1 x2 {p=pp}) + x5
+tdivp {x5 = Z} = congDivL t1zp .!> t1zp
+tdivp {x5 = S x5, x3 = Z} = void $ natContra1 $ p ..> xA1p t12sp
+tdivp {x5 = S x5, x3 = S x3} with (x1 + S (x2 + (x5 * S x2))) proof v1
+  tdivp {x5 = S x5, x3 = S x3} | Z = void $ natContra1 $ v1 !.> t12sp
+  tdivp {x5 = S x5, x3 = S x3} | (S x7) with (esubs (S x7) x2)
+    tdivp {x5 = S x5, x3 = S x3} | (S x7) | (x8 ** Left p1) = let
+      v2 = vAs $ p1 ..> t12sp
+      v4 = vAs $ t12sp !.> v1
+      v5 = p .!> t12sp ..> xAs (aP !.> xA1p (c21p ..> c213pp ..> v4))
+      v6 = v1Ap $ v2 !.> v4 !.> c213pp
+      in xAs (congDivL {pp = v5} v6 ..> tdivp) .!> t12sp
+    tdivp {x5 = S x5, x3 = S x3} | (S x7) | (x8 ** Right p2) = 
+      void $ natContra1 $ v1Ap $ t1zp ..> vAs (v1 !.> t12sp ..> xAs (c213pp ..> xA1p p2 ..> xAs aP .!> t12sp))

@@ -36,10 +36,12 @@ mutual
   (.tb) (Shar acc) = acc.b + acc.r
   (.tb) (shr :: acc) = shr.tb + acc.b
 
+  export
   (.stb) : (shr : Shares n) -> SF shr.tb
   (.stb) (Shar acc) = acc.sb.add
   (.stb) (shr :: acc) = shr.stb + acc.b
 
+  export
   (.share) : Shares n -> F -> F
   (.share) shr x = x * shr.ts * shr.stb.inv
 
@@ -48,14 +50,17 @@ export
 (.us) (shr :: acc) FZ = shr.share acc.b
 (.us) (shr :: acc) (FS u) = shr.us u
 
+export
 (.sts) : (shr : Shares n) -> SF shr.ts
 (.sts) (Shar acc) = acc.sb
 (.sts) (shr :: acc) = shr.sts + shr.share acc.b
 
+export
 (.tr) : (shr : Shares n) -> F
 (.tr) (Shar acc) = acc.r
 (.tr) (shr :: acc) = shr.tr + acc.r
 
+export
 (.tbts) : (shr : Shares n) -> shr.tr == shr.tb - shr.ts
 (.tbts) (Shar acc) = refl
 (.tbts) (shr :: acc) = c13p24pp ..> xABp shr.tbts acc.bs
@@ -71,18 +76,20 @@ record Deploy (n : N) (b : F) (shr : Shares n) where
   tb : shr.tb == b
   ts : shr.ts == b
   us : (w : Fi n) -> shr.us w == (Z).fr
+  tbts : shr.tb == shr.ts
 
 export
 deploy : (n : N) -> (b : F) -> DeployPre n b -> (shr ** shr <<< Deploy n b)
-deploy Z b p = (Shar (RootShr p.sb (Z).fr) ** Deployed t1zp refl (\w => fiVoid w))
+deploy Z b p = (Shar (RootShr p.sb (Z).fr) ** Deployed t1zp refl (\w => fiVoid w) t1zp)
 deploy (S n) b p = let
   (shr ** vshr) = deploy n b (Deploying p.sb)
   tb = t1zp ..> vshr.tb
   ts = x1Ap tz1m2m ..> t1zp ..> vshr.ts
   bs = t1zp ..> tz1m2m
+  tbts = tb .!> ts
   in (shr :: UserShr bs ** Deployed tb ts (\w => case w of
     FZ => tz1m2m
-    FS w => vshr.us w))
+    FS w => vshr.us w) tbts)
 
 public export
 record Donate (shr : Shares n) (a : F) (shr2 : ty shr) where

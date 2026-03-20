@@ -243,3 +243,24 @@ c43m21mm = xABm c21m c21m ..> c21m
 export
 c32m14mm : {x1, x2, x3, x4 : N} -> (x1 * x2) * (x3 * x4) = (x3 * x2) * (x1 * x4)
 c32m14mm = c13m24mm ..> c21m3m ..> c13m24mm
+
+export
+c13p24pp : {x1, x2, x3, x4 : N} -> (x1 + x2) + (x3 + x4) = (x1 + x3) + (x2 + x4)
+c13p24pp = aP ..> x1Ap c213pp .!> aP
+
+export
+c43p2p1p : {x1, x2, x3, x4 : N} -> ((x1 + x2) + x3) + x4 = ((x4 + x3) + x2) + x1
+
+export
+xA1d : {x1, x2, x3 : N} -> x1 = x2 -> div x1 x3 = div x2 x3
+xA1d Refl = Refl
+
+export
+x1Ad : {x1, x2, x3 : N} -> x1 = x2 -> div x3 x1 = div x3 x2
+x1Ad Refl = Refl
+
+
+export
+t12p3d : {x1, x2, x3 : N} -> (x1 + x2) `div` x3 = x1 `div` x3 + x2 `div` x3 + (x1 `mod` x3 + x2 `mod` x3) `div` x3 
+t12p3d = ?asdasd $ sym $ xABp t12d2sm t12d2sm
+

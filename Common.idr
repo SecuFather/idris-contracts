@@ -2,8 +2,8 @@ module Common
 
 %default total
 
-infixr 5 ..>, !.>, .!>, !!>, <<<
-infixl 8 |+|
+export infixr 5 ..>, !.>, .!>, !!>, <<<
+export infixl 8 |+|
 
 public export
 data N = Z | S N

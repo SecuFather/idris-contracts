@@ -131,3 +131,11 @@ v1sAm (SFr Refl) (Feq p) {x0 = Fr (S x0) (S y0) Refl, x1 = Fr x1 (S y1) Refl, x2
 export
 sfr : {x : N} -> SF ((S x).fr)
 sfr = SFr Refl
+
+export
+t1f2fm : {x1, x2 : N} -> x1.fr * x2.fr == (x1 * x2).fr
+t1f2fm = Feq $ c21m .!> xA1m t1um
+
+export
+vAf : {x1, x2 : N} -> x1.fr == x2.fr -> x1 = x2
+vAf (Feq p) = t1um !.> p ..> tu1m
