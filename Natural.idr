@@ -291,3 +291,12 @@ tdivp {x5 = S x5, x3 = S x3} with (x1 + S (x2 + (x5 * S x2))) proof v1
       in xAs (congDivL {pp = v5} v6 ..> tdivp) .!> t12sp
     tdivp {x5 = S x5, x3 = S x3} | (S x7) | (x8 ** Right p2) = 
       void $ natContra1 $ v1Ap $ t1zp ..> vAs (v1 !.> t12sp ..> xAs (c213pp ..> xA1p p2 ..> xAs aP .!> t12sp))
+
+
+export
+t123smp3d : {x1, x2, x3 : N} -> (x1 + x2 * S x3) `div` x3 = x1 `div` x3 + x2
+t123smp3d = tdivp ..> xA1p (congDivL Refl {p = Refl})
+
+export
+tz1d : {x1 : N} -> Z * x1 `div` x1 = Z
+tz1d = Refl

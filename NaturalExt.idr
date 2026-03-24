@@ -259,8 +259,10 @@ export
 x1Ad : {x1, x2, x3 : N} -> x1 = x2 -> div x3 x1 = div x3 x2
 x1Ad Refl = Refl
 
+export
+t12p3d : {x1, x2, x3 : N} -> (x1 + x2) `div` x3 = (x1 `div` x3 + x2 `div` x3) + (x1 `mod` x3 + x2 `mod` x3) `div` x3 
+t12p3d = xA1d (xABp t12d2sm t12d2sm !.> (c13p24pp .!> x1Ap t12p3m)) ..> t123smp3d ..> c21p
 
 export
-t12p3d : {x1, x2, x3 : N} -> (x1 + x2) `div` x3 = x1 `div` x3 + x2 `div` x3 + (x1 `mod` x3 + x2 `mod` x3) `div` x3 
-t12p3d = ?asdasd $ sym $ xABp t12d2sm t12d2sm
-
+t12sm2d : {x1, x2 : N} -> x1 * S x2 `div` x2 = x1
+t12sm2d = v1Ap $ xA1p tz1d ..> tz1p ..> xA1d (tz1p !!> xA1p tz1m) ..> t123smp3d

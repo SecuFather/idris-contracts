@@ -84,13 +84,11 @@ export
 (.deposit) liqTok u a p = let
   (shr ** vshr) = liqTok.shr.deposit u $ (a * liqTok.ts `div` liqTok.tb1).fr * liqTok.shr.tb * liqTok.shr.sts.inv
   (shr2 ** vshr2) = shr.donate $ (a * liqTok.ts `mod` liqTok.tb1).fr * liqTok.shr.sts.inv
-  p1 = vshr.xs ..> xA1m t12im2m ..> t12m2im
-  p2 = vshr.tsx ..> xABp liqTok.vts p1 ..> c21p ..> t1f2fp
-  p3 = p.v1.ubr2 p.uu0
-  p4 = p.v1.p.v1.uba
-  p5 = tdiv
-  (bal ** vbal) = liqTok.tok.bal.burn u0 (a * liqTok.ts `div` liqTok.tb1) $ Burning $ ?s§ssss ..> ub
-  -- vA1p (xA1p (aP !.> xABp ?ssss p3 ..> c32p1p) ..> c43p2p1p ..> xA1p liqTok.vtr ..> mub .!> mub) ..> ub
+  p1 = t12sm2d !.> xA1d (x1Am t1s2p !.> t123pm) ..> t12p3d
+  p2 = p.v1.ubr2 p.uu0
+  p3 = c13p2p ..> xABp p2 liqTok.vtr ..> c21p ..> mub .!> mub
+  (bal ** vbal) = liqTok.tok.bal.burn u0 (a * liqTok.ts `div` liqTok.tb1) $ Burning $ 
+    (aP !.> aP !.> xA1p p1 !.> vA1p (c143pp2p ..> aP !.> xA1p aP ..> p3)) ..> ub
   (tok ** vtok) = liqTok.tok.transfer u0 u (a * liqTok.ts `div` liqTok.tb1) (Transferring vbal)
   -- pa = t12p3m !.> t12im (xA1p (x1Am liqTok.vtb1 !.> t1f2fm) ..> t1f2fp ..> xAf tdiv !.> t1f2fm !.> x1Am liqTok.vts1)
   -- vtb = vshr2.tba ..> xA1p vshr.tba ..> aP ..> xABp liqTok.vtb pa ..> t1f2fp .!> xAf (p.v1.ub2 p.uu0)
