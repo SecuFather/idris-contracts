@@ -249,9 +249,6 @@ c13p24pp : {x1, x2, x3, x4 : N} -> (x1 + x2) + (x3 + x4) = (x1 + x3) + (x2 + x4)
 c13p24pp = aP ..> x1Ap c213pp .!> aP
 
 export
-c43p2p1p : {x1, x2, x3, x4 : N} -> ((x1 + x2) + x3) + x4 = ((x4 + x3) + x2) + x1
-
-export
 xA1d : {x1, x2, x3 : N} -> x1 = x2 -> div x1 x3 = div x2 x3
 xA1d Refl = Refl
 
@@ -266,3 +263,7 @@ t12p3d = xA1d (xABp t12d2sm t12d2sm !.> (c13p24pp .!> x1Ap t12p3m)) ..> t123smp3
 export
 t12sm2d : {x1, x2 : N} -> x1 * S x2 `div` x2 = x1
 t12sm2d = v1Ap $ xA1p tz1d ..> tz1p ..> xA1d (tz1p !!> xA1p tz1m) ..> t123smp3d
+
+export
+t12sp3p : {x1, x2, x3 : N} -> (x1 + S x2) + x3 = S ((x1 + x2) + x3)
+t12sp3p = xA1p t12sp ..> t1s2p

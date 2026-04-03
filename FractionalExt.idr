@@ -147,9 +147,3 @@ c14m23mm = aM ..> x1Am c321mm .!> aM
 export
 xABm : {a1, a2, b1, b2 : F} -> a1 == a2 -> b1 == b2 -> a1 * b1 == a2 * b2
 xABm p1 p2 = xA1m p1 ..> x1Am p2
-
-export
-c31p2p : {x1, x2, x3 : F} -> (x1 + x2) + x3 == (x3 + x1) + x2
-
-export
-c23p1p : {x1, x2, x3 : F} -> (x1 + x2) + x3 == (x2 + x3) + x1
